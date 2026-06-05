@@ -1,0 +1,187 @@
+@startuml Exception Guardrail Mechanism - Architecture Diagram
+
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam roundCorner 10
+skinparam packageStyle frame
+
+title **Exception Guardrail Mechanism — AI Voice Agent Compliance Architecture**\n~9,500-line YAML State Machine for US Debt Collection
+
+' ============================================================
+' SECTION 1: HIGH-LEVEL COMPONENT ARCHITECTURE
+' ============================================================
+
+package "Conversational Turn Processing Pipeline" as pipeline #E8F5E9 {
+
+    component "Consumer\nUtterance" as input #BBDEFB
+
+    package "Dual-LLM Architecture (type: 2llmcalls)" as dual_llm #FFF9C4 {
+
+        component "**Reflection LLM**\n(1st Call)" as reflection #FFE082 {
+            note right of reflection
+                Analyzes last N messages.
+                Extracts **exc** variable:
+                - complaint
+                - dispute_balance
+                - bankruptcy
+                - cease_comms
+                - attorney
+                - "null" (default)
+            end note
+        }
+
+        component "**Response LLM**\n(2nd Call)" as response_llm #FFE082 {
+            note right of response_llm
+                Generates agent reply
+                ONLY after transition
+                conditions are evaluated
+            end note
+        }
+    }
+
+    component "**Transition Condition\nEvaluator**" as evaluator #EF9A9A {
+        note bottom of evaluator
+            Exception checks run **FIRST**
+            before any business logic.
+            Compliance routing physically
+            cannot be skipped.
+        end note
+    }
+
+    component "Agent\nResponse" as output #BBDEFB
+}
+
+input -right-> reflection : raw transcript
+reflection -right-> evaluator : exc variable
+evaluator -right-> response_llm : approved state
+response_llm -right-> output : generated reply
+
+' ============================================================
+' SECTION 2: TRANSITION CONDITION ORDERING
+' ============================================================
+
+package "Transition Condition Ordering (Structural Priority)" as ordering #FFEBEE {
+
+    rectangle "**1. Exception Checks (ALWAYS FIRST)**" as exc_block #EF5350 {
+        card "exc == 'callback' → exc_cb" as t1 #FFCDD2
+        card "exc == 'complaint' → exc_complaint" as t2 #FFCDD2
+        card "exc == 'dispute' → exc_dispute" as t3 #FFCDD2
+        card "exc == 'bankruptcy' → exc_bankruptcy" as t4 #FFCDD2
+        card "exc == 'cease_comms' → exc_cease_comms" as t5 #FFCDD2
+        card "exc == 'attorney' → exc_attorney" as t6 #FFCDD2
+        card "... 11 more exception checks ..." as t7 #FFCDD2
+    }
+
+    rectangle "**2. Business Logic (AFTER exceptions)**" as biz_block #42A5F5 {
+        card "Warm transfer transitions" as b1 #BBDEFB
+        card "Payment flow transitions" as b2 #BBDEFB
+        card "Verification transitions" as b3 #BBDEFB
+    }
+}
+
+exc_block -[hidden]down-> biz_block
+
+' ============================================================
+' SECTION 3: EXCEPTION STATES (17 States)
+' ============================================================
+
+package "Exception States (list_states_exception)" as exc_states #F3E5F5 {
+
+    package "FDCPA §1692c — Communication Controls" as fdcpa_c #E1BEE7 {
+        component "exc_cease_comms\n§1692c(c)" as s_cease #CE93D8
+        component "exc_attorney\n§1692c(a)(2)" as s_attorney #CE93D8
+        component "exc_inconvenient_time\n§1692c(a)(1)" as s_time #CE93D8
+    }
+
+    package "FDCPA §1692g — Dispute Sub-Types" as fdcpa_g #E1BEE7 {
+        component "exc_dispute" as s_dispute #CE93D8
+        component "exc_dispute_balance" as s_balance #CE93D8
+        component "exc_dispute_paid" as s_paid #CE93D8
+        component "exc_dispute_theft" as s_theft #CE93D8
+        component "exc_dispute_txn_fraud" as s_fraud #CE93D8
+    }
+
+    package "Federal / Special Protections" as federal #E1BEE7 {
+        component "exc_bankruptcy" as s_bankrupt #CE93D8
+        component "exc_deceased" as s_deceased #CE93D8
+        component "exc_military_service\n(SCRA)" as s_military #CE93D8
+        component "exc_prison" as s_prison #CE93D8
+    }
+
+    package "Recording & Consumer Rights" as rights #E1BEE7 {
+        component "exc_revoke_recording\n(TCPA)" as s_revoke_rec #CE93D8
+        component "exc_revoke_ai_recording" as s_revoke_ai #CE93D8
+        component "exc_complaint" as s_complaint #CE93D8
+        component "exc_language" as s_language #CE93D8
+        component "exc_human_agent_request" as s_human #CE93D8
+    }
+}
+
+' ============================================================
+' SECTION 4: STATE FLOW DIAGRAM
+' ============================================================
+
+package "Exception Guardrail Flow" as flow #E3F2FD {
+
+    state "Any Main-Flow State\n(e.g. payment, verification)" as main_state #42A5F5
+    state "Reset exc = null\n(variable_change_exception)" as reset #FFA726
+    state "Reflection LLM\nDetects exc trigger" as detect #FFE082
+    state "Exception State\n(full compliance sub-flow)" as exc_handling #CE93D8
+    state "BACK|EXC\n(Return to caller state)" as back_exc #66BB6A
+
+    [*] --> main_state
+
+    main_state --> reset : each turn starts
+    reset --> detect : fresh detection\n(no stale state)
+    detect --> exc_handling : exc != null\n(compliance trigger found)
+    detect --> main_state : exc == null\n(continue business logic)
+
+    exc_handling --> back_exc : exception handled
+    back_exc --> main_state : resume conversation\nwhere it left off
+
+    note right of exc_handling
+        **Exception-Within-Exception:**
+        Even inside an exception state,
+        the system continues monitoring
+        for NEW exceptions (recursive).
+        e.g. cease_comms → human_agent_request
+    end note
+}
+
+' ============================================================
+' SECTION 5: DEFENSE-IN-DEPTH LAYERS
+' ============================================================
+
+package "Defense-in-Depth Architecture" as defense #FFF3E0 {
+
+    rectangle "Layer 1: Reflection LLM\n(Semantic exception detection\nat every conversational turn)" as L1 #FFE082
+    rectangle "Layer 2: Transition Condition Ordering\n(Exception checks physically precede\nbusiness logic — cannot be skipped)" as L2 #EF9A9A
+    rectangle "Layer 3: Reset-and-Redetect\n(exc = null after each transition;\nfresh evaluation every turn)" as L3 #FFA726
+    rectangle "Layer 4: Full Sub-Flow States\n(Each exception is a complete\nmulti-step compliance conversation)" as L4 #CE93D8
+    rectangle "Layer 5: Guardrail Validator Hooks\n(Pre-allocated hook points for\nadditional validation — guardrail_response)" as L5 #A5D6A7
+
+    L1 -[hidden]down-> L2
+    L2 -[hidden]down-> L3
+    L3 -[hidden]down-> L4
+    L4 -[hidden]down-> L5
+}
+
+' ============================================================
+' SECTION 6: KEY PROPERTIES
+' ============================================================
+
+legend bottom
+    **Key Architectural Properties:**
+    | Property | Description |
+    | Compliance is Structural | Every state transition checks regulatory triggers before business logic |
+    | No Human Review Gate | System self-enforces — exception detection runs automatically every turn |
+    | Cannot Be Bypassed | Exception checks are in transition condition ordering, not a separate layer |
+    | Scalable | New regulation = new exception state + detection criteria in reflection variable |
+    | Recursive Detection | Exception-within-exception monitoring at every level |
+    | Stateless Per Turn | Reset-and-redetect ensures no stale compliance state |
+end legend
+
+@enduml

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tictag CTO Roleplay — Yihang × Ngoc</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+  :root { --bg:#0a0a0f;--surface:#111118;--border:#1e1e2e;--accent:#00e5ff;--accent2:#ff6b35;--text:#e2e8f0;--muted:#64748b;--warning:#fbbf24; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;}
+  .header{border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:100;}
+  .logo{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;}
+  .logo span{color:var(--accent);}
+  .tabs{display:flex;border-bottom:1px solid var(--border);padding:0 32px;overflow-x:auto;}
+  .tab{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:14px 20px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab.active.ngoc{color:var(--accent2);border-bottom-color:var(--accent2);}
+  .panel{display:none;padding:24px 32px 100px;max-width:900px;margin:0 auto;}
+  .panel.active{display:block;}
+
+  /* TOOLBAR */
+  .panel-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+  .toolbar-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;border:none;}
+  .toolbar-btn.export{background:rgba(0,229,255,.08);color:var(--accent);border:1px solid rgba(0,229,255,.25);}
+  .toolbar-btn.export:hover{background:rgba(0,229,255,.16);}
+  .toolbar-btn.import{background:rgba(124,58,237,.08);color:#a78bfa;border:1px solid rgba(124,58,237,.25);}
+  .toolbar-btn.import:hover{background:rgba(124,58,237,.16);}
+  .toolbar-btn.csv{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+  .toolbar-btn.csv:hover{background:rgba(74,222,128,.16);}
+  .file-input-hidden{display:none;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;right:24px;background:#1e1e2e;color:var(--accent);border:1px solid var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 18px;border-radius:4px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  /* BRIEFING */
+  .briefing-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+  .briefing-card{background:var(--surface);border:1px solid var(--border);padding:20px;border-radius:4px;}
+  .briefing-card.full{grid-column:1/-1;}
+  .card-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  .card-label.accent{color:var(--accent);}
+  .card-label.orange{color:var(--accent2);}
+  .card-label.purple{color:#a78bfa;}
+  .profile-name{font-size:18px;font-weight:600;margin-bottom:4px;}
+  .profile-meta{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .trait-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .trait-list li{font-size:13px;padding-left:16px;position:relative;color:#94a3b8;}
+  .trait-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-family:monospace;}
+  .trait-list li.orange::before{color:var(--accent2);}
+  .intel-block{background:rgba(0,229,255,.03);border:1px solid rgba(0,229,255,.1);border-radius:3px;padding:16px;margin-top:12px;}
+  .intel-block.warning{background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.2);}
+  .intel-block p{font-size:12px;color:#94a3b8;line-height:1.7;}
+  .intel-block strong{color:var(--text);}
+
+  /* ROLEPLAY */
+  .roleplay-container{display:flex;flex-direction:column;}
+  .chat-message{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);animation:fi .3s ease;}
+  @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+  .avatar.yihang{background:rgba(0,229,255,.15);color:var(--accent);border:1px solid rgba(0,229,255,.3);}
+  .avatar.ngoc{background:rgba(255,107,53,.15);color:var(--accent2);border:1px solid rgba(255,107,53,.3);}
+  .avatar.system{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3);}
+  .message-body{flex:1;}
+  .message-sender{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+  .message-sender.yihang{color:var(--accent);}
+  .message-sender.ngoc{color:var(--accent2);}
+  .message-sender.system{color:#a78bfa;}
+  .message-text{font-size:14px;color:#cbd5e1;line-height:1.7;}
+  .input-area{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--border);padding:16px 32px;}
+  .input-wrapper{max-width:836px;margin:0 auto;display:flex;gap:12px;}
+  .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 16px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:14px;resize:none;outline:none;min-height:44px;max-height:120px;transition:border-color .2s;}
+  .chat-input:focus{border-color:var(--accent);}
+  .chat-input::placeholder{color:var(--muted);}
+  .send-btn{background:var(--accent);color:#000;border:none;padding:12px 20px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;align-self:flex-end;white-space:nowrap;}
+  .send-btn:hover{opacity:.85;}
+  .send-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .roleplay-toolbar{display:flex;justify-content:flex-end;margin-bottom:16px;}
+
+  /* Q&A */
+  .qa-section{margin-bottom:40px;}
+  .section-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:10px 0;margin-bottom:16px;border-bottom:1px solid var(--border);}
+  .section-title.yihang{color:var(--accent);border-color:rgba(0,229,255,.2);}
+  .section-title.ngoc{color:var(--accent2);border-color:rgba(255,107,53,.2);}
+  .qa-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:12px;overflow:hidden;}
+  .qa-question{padding:16px 20px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:background .2s;}
+  .qa-question:hover{background:rgba(255,255,255,.02);}
+  .q-number{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);min-width:24px;margin-top:2px;}
+  .q-text{flex:1;font-size:14px;color:var(--text);line-height:1.5;}
+  .q-toggle{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--muted);transition:transform .2s;line-height:1;padding-top:2px;}
+  .qa-item.open .q-toggle{transform:rotate(45deg);}
+  .qa-answer{display:none;padding:16px 20px 20px;border-top:1px solid var(--border);background:rgba(255,255,255,.015);}
+  .qa-item.open .qa-answer{display:block;}
+  .answer-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;color:var(--accent2);}
+  .answer-text{font-size:13px;color:#94a3b8;line-height:1.75;}
+  .answer-text strong{color:var(--text);}
+  .tactical-note{margin-top:12px;padding:10px 14px;border-left:2px solid var(--warning);background:rgba(251,191,36,.04);font-size:12px;color:#94a3b8;}
+  .tactical-note strong{color:var(--warning);}
+  .risk-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;padding:2px 8px;border-radius:2px;margin-left:8px;text-transform:uppercase;}
+  .risk-tag.high{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3);}
+  .risk-tag.med{background:rgba(251,191,36,.15);color:var(--warning);border:1px solid rgba(251,191,36,.3);}
+  .risk-tag.low{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.25);}
+  .your-q-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:12px;overflow:hidden;}
+  .your-q-header{padding:16px 20px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:background .2s;}
+  .your-q-header:hover{background:rgba(255,255,255,.02);}
+  .priority-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;padding:3px 8px;border-radius:2px;text-transform:uppercase;white-space:nowrap;margin-top:2px;}
+  .priority-badge.p1{background:rgba(255,107,53,.15);color:var(--accent2);border:1px solid rgba(255,107,53,.3);}
+  .priority-badge.p2{background:rgba(251,191,36,.1);color:var(--warning);border:1px solid rgba(251,191,36,.25);}
+  .priority-badge.p3{background:rgba(100,116,139,.15);color:var(--muted);border:1px solid rgba(100,116,139,.3);}
+  .your-q-body{display:none;padding:16px 20px 20px;border-top:1px solid var(--border);background:rgba(255,107,53,.02);}
+  .your-q-item.open .your-q-body{display:block;}
+  .your-q-item.open .q-toggle{transform:rotate(45deg);}
+  .why-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px;}
+  .why-text{font-size:13px;color:#94a3b8;line-height:1.75;margin-bottom:10px;}
+  .why-text strong{color:var(--text);}
+  .follow-up{font-size:12px;color:var(--muted);padding:8px 12px;border-left:2px solid rgba(0,229,255,.3);background:rgba(0,229,255,.03);}
+  .follow-up strong{color:var(--accent);}
+  .typing-indicator{display:flex;gap:4px;align-items:center;padding:4px 0;}
+  .typing-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:tb 1.2s infinite;}
+  .typing-dot:nth-child(2){animation-delay:.2s;}
+  .typing-dot:nth-child(3){animation-delay:.4s;}
+  @keyframes tb{0%,80%,100%{transform:translateY(0);opacity:.4;}40%{transform:translateY(-4px);opacity:1;}}
+  ::-webkit-scrollbar{width:6px;height:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="header">
+  <div class="logo">TICTAG <span>//</span> CTO MEETING PREP</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('brief',this)">01 · Context Brief</button>
+  <button class="tab" onclick="showTab('roleplay',this)">02 · Live Roleplay</button>
+  <button class="tab ngoc" onclick="showTab('his-q',this)">03 · His Questions → Your Answers</button>
+  <button class="tab ngoc" onclick="showTab('your-q',this)">04 · Your Power Questions</button>
+</div>
+
+<!-- PANEL 1 -->
+<div id="panel-brief" class="panel active">
+  <div class="panel-toolbar">
+    <button class="toolbar-btn import" onclick="document.getElementById('imp-brief').click()">⬆ Import MD</button>
+    <input type="file" id="imp-brief" class="file-input-hidden" accept=".md,.txt" onchange="importMD('brief',this)">
+    <button class="toolbar-btn export" onclick="exportMD('brief')">⬇ Export MD</button>
+  </div>
+  <div id="brief-content">
+    <div class="briefing-grid">
+      <div class="briefing-card">
+        <div class="card-label accent">Yihang's Profile — Confidential</div>
+        <div class="profile-name">Low Yihang</div>
+        <div class="profile-meta">CTO · Co-Founder · Singapore</div>
+        <ul class="trait-list">
+          <li>NTU honors, Master's in Digital Media Engineering — technical credibility is core to his identity</li>
+          <li>Day-0 co-founder with Kevin &amp; Lee Jin — all TAIGER alumni, tight social bond</li>
+          <li>Garreth (resigned PM) was also TAIGER network — Yihang and Garreth are friends</li>
+          <li>Deep learning + full-stack — hands-on, not purely managerial</li>
+          <li>Oversees all tech + data science; no designated Chief Data Scientist</li>
+          <li class="orange">Garreth's exit likely landed on him: now no PM-to-Eng bridge between SG and VN</li>
+        </ul>
+      </div>
+      <div class="briefing-card">
+        <div class="card-label orange">Your Profile — What He'll Assess</div>
+        <div class="profile-name">Ngoc Le</div>
+        <div class="profile-meta">Senior PM · AI Voice · Fintech · 10 yrs SEA</div>
+        <ul class="trait-list">
+          <li class="orange">No computer vision background — expect this to surface</li>
+          <li>Strong R&amp;D-to-production track: emotion detection R&amp;D → UAT → US live</li>
+          <li>Multi-vendor AI architecture (TS: STS, ASR, NLU, TTS stack coordination)</li>
+          <li>Dataset labelling framework design — directly relevant to Tictag's core</li>
+          <li>EY tech due diligence — enterprise evaluation credibility</li>
+          <li>ZaloPay, Shopee — SEA product ops depth</li>
+        </ul>
+      </div>
+      <div class="briefing-card full">
+        <div class="card-label purple">Sensitive Intelligence — Handle Carefully</div>
+        <div class="intel-block warning">
+          <p><strong>The Garreth situation:</strong> Garreth Peh resigned under pressure from Michael — framed as "failing to drive product cadence across SG-VN teams." Yihang and Garreth are friends. <strong>Yihang may privately disagree with this framing.</strong> He may see Michael's pressure as the real failure point. Do not volunteer any opinion on Garreth. If he raises it, be neutral and focus on systemic gaps, not personal failure.</p>
+        </div>
+        <div class="intel-block" style="margin-top:8px;">
+          <p><strong>The structural tension:</strong> SG team runs research pace. Michael wants fast-deploy commercial outputs for Vietnam. Kevin wants to preserve SG grants. Yihang built the 5-year R&amp;D stack. <strong>He has skin in the Singapore work.</strong> Don't frame SG R&amp;D as "too slow" — frame it as "underdeployed." He needs to hear you want to extract value from his work, not sideline it.</p>
+        </div>
+      </div>
+    </div>
+    <div class="briefing-card">
+      <div class="card-label accent">What Yihang Wants From This Meeting</div>
+      <ul class="trait-list" style="margin-top:8px;">
+        <li>Validate that you understand what the SG tech actually does and its real constraints</li>
+        <li>Assess whether you'll be a bridge or a bottleneck between him and Vietnam delivery</li>
+        <li>Understand whether you'll advocate for the SG R&amp;D stack or bypass it</li>
+        <li>Know if you're technical enough to translate requirements without hand-holding</li>
+        <li class="orange">Quietly check: are you the kind of PM who creates process overhead, or who removes it?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 2 -->
+<div id="panel-roleplay" class="panel">
+  <div class="roleplay-toolbar">
+    <button class="toolbar-btn csv" onclick="exportCSV()">⬇ Export Dialog CSV</button>
+  </div>
+  <div id="chat-log" class="roleplay-container">
+    <div class="chat-message">
+      <div class="avatar system">SYS</div>
+      <div class="message-body">
+        <div class="message-sender system">System</div>
+        <div class="message-text">Live roleplay active. Yihang will respond in character. Use Tab 03 for reference answers if needed. Enter to send · Shift+Enter for newline.</div>
+      </div>
+    </div>
+    <div class="chat-message" data-role="yihang" data-sender="Low Yihang — CTO, Tictag" data-ts="">
+      <div class="avatar yihang">YH</div>
+      <div class="message-body">
+        <div class="message-sender yihang">Low Yihang — CTO, Tictag</div>
+        <div class="message-text">Hey Ngoc, thanks for making time. Michael mentioned you've done some serious research on us — which I appreciate, honestly, most people come in pretty thin on the technical side. So let me just jump in: what's your honest read on what the SG team is actually building, and why do you think the Vietnam side is struggling to deploy it?</div>
+      </div>
+    </div>
+  </div>
+  <div class="input-area">
+    <div class="input-wrapper">
+      <textarea class="chat-input" id="user-input" placeholder="Type as Ngoc... (Enter to send · Shift+Enter for newline)" rows="1"
+        onkeydown="handleKey(event)"
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 3 -->
+<div id="panel-his-q" class="panel">
+  <div class="panel-toolbar">
+    <button class="toolbar-btn import" onclick="document.getElementById('imp-hisq').click()">⬆ Import MD</button>
+    <input type="file" id="imp-hisq" class="file-input-hidden" accept=".md,.txt" onchange="importMD('his-q',this)">
+    <button class="toolbar-btn export" onclick="exportMD('his-q')">⬇ Export MD</button>
+  </div>
+  <div id="his-q-content">
+    <div class="qa-section">
+      <div class="section-title yihang">Questions Yihang Is Likely To Ask You</div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q1</div><div class="q-text">You've been in voice AI, not computer vision. Why does that experience transfer here? <span class="risk-tag high">High Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">Fair question. The domain is different, but the PM challenge is structurally identical. At Trusting Social I was translating between a deep learning R&D team building something academically novel — real-time streaming emotion detection — and a commercial team that needed it in production with US compliance constraints, in parallel sprints, under client pressure.<br><br>
+          <strong>What I bring isn't computer vision expertise. What I bring is knowing how to define requirements clearly enough that your engineers aren't being asked to guess what "good enough for the pilot" means versus what "production-ready" means. That's the bottleneck I've fixed before.</strong></div>
+          <div class="tactical-note"><strong>Watch out:</strong> Don't say "I can learn CV fast." Own the gap, then reframe to what you actually have.</div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q2</div><div class="q-text">Garreth was here before you. He didn't make it work. Why would you be different? <span class="risk-tag high">High Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">I'd be careful about that framing — I think the problem wasn't personal, it was structural. If one PM is expected to drive product cadence across a Singapore R&D team and a Vietnam delivery team simultaneously, without clear ownership lines, without a shared prioritisation framework, and with two geographies running on completely different commercial timelines — that's a setup that would challenge most PMs.<br><br>
+          <strong>What I'd do differently is establish the operating model first before trying to drive cadence. What's the single source of truth for the backlog? Who has authority to freeze a sprint for Vietnam delivery versus continue a Singapore R&D cycle? Without that clarity, any PM is going to struggle.</strong></div>
+          <div class="tactical-note"><strong>Watch out:</strong> Yihang is Garreth's friend. Never throw Garreth under the bus. Attribute it to structure, signal you'd fix the structure.</div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q3</div><div class="q-text">What do you actually know about our technology stack? <span class="risk-tag med">Medium Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">From what's publicly visible and my conversations with Michael: your core is computer vision, with a data annotation platform as both an internal enabler and a commercial product — the Truetag pipeline targeting near-perfect accuracy through human-in-the-loop quality control. Mobile-first crowdsourcing suited to ASEAN labor markets.<br><br>
+          <strong>For the Vietnam client use cases — Lotte self-checkout fraud detection, Vietnam Airlines Cargo asset detection — the gap isn't your model quality. It's on-premise deployment and real-time latency. Those are infra and delivery questions, not research questions. That's where I'd focus my first 30 days.</strong></div>
+          <div class="tactical-note"><strong>Watch out:</strong> If he drills into specific architectures, say: "I'd want to spend time with your architecture docs — I don't want to pretend I know your stack better than I do."</div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q4</div><div class="q-text">How would you handle Michael pushing for a client feature that SG engineering says will take 3 months? <span class="risk-tag med">Medium Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">That's not a PM problem to solve alone — it's a product strategy decision that needs to be made transparently, not worked around.<br><br>
+          <strong>Concretely: I'd scope the 3-month request and find the 80% version that could be a 3-week pilot wrapper. Then present both to Kevin and Michael: here's what we can deliver that proves the concept, here's what the full version costs and when it's available. The PM's job isn't to absorb that tension — it's to translate it into a decision that leadership owns.</strong></div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q5</div><div class="q-text">What's your technical depth? Can you write requirements engineers can build from without constant clarification? <span class="risk-tag med">Medium Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">Yes — and I can point to evidence. The dataset labelling framework I designed for emotion detection was built from scratch: I defined the labelling schema, edge case taxonomy, inter-annotator agreement rules, and production validation criteria. Engineers and data scientists built from it without a back-and-forth loop.<br><br>
+          <strong>At TS I was coordinating three engineering sub-teams simultaneously. I work spec-first. I'd rather spend two extra days getting the spec watertight than lose a sprint to misaligned interpretation.</strong></div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q6</div><div class="q-text">What would your first 30/60/90 days look like? <span class="risk-tag low">Lower Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text"><strong>Days 1–30 — diagnosis only.</strong> Full access to architecture docs, current backlog, and every SG-VN conversation thread. Understand the real latency bottleneck on VNA, the on-premise constraint with Lotte, where the SG research roadmap is. No solutions yet.<br><br>
+          <strong>Days 30–60 — operating model design.</strong> Propose a single-source-of-truth backlog with clear lane separation between SG R&D and VN delivery. Run past you and Kevin before touching anything.<br><br>
+          <strong>Days 60–90 — first delivery cycle.</strong> One clean sprint with defined output and a retrospective. Prove the operating model works, not just ship a feature.</div>
+        </div>
+      </div>
+
+      <div class="qa-item" onclick="toggleQA(this)">
+        <div class="qa-question"><div class="q-number">Q7</div><div class="q-text">You're based in Vietnam but we're a Singapore entity. How does that work operationally? <span class="risk-tag low">Lower Risk</span></div><div class="q-toggle">+</div></div>
+        <div class="qa-answer">
+          <div class="answer-label">Recommended Answer</div>
+          <div class="answer-text">My proposal is a Singapore employment pass, based in Vietnam — physically present in the Vietnam commercial environment while remaining on the SG entity. That matters for the SG government grant structure, and means I'm available for client meetings without travel overhead.<br><br>
+          <strong>Practically: quarterly visits to Singapore for deeper alignment. Good async documentation and a weekly structured sync resolves most day-to-day coordination — and establishing that sync cadence is one of the first things I'd want to build.</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL 4 -->
+<div id="panel-your-q" class="panel">
+  <div class="panel-toolbar">
+    <button class="toolbar-btn import" onclick="document.getElementById('imp-yourq').click()">⬆ Import MD</button>
+    <input type="file" id="imp-yourq" class="file-input-hidden" accept=".md,.txt" onchange="importMD('your-q',this)">
+    <button class="toolbar-btn export" onclick="exportMD('your-q')">⬇ Export MD</button>
+  </div>
+  <div id="your-q-content">
+    <div class="qa-section">
+      <div class="section-title ngoc">Your Power Questions — Ranked by Priority</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">Calibrated to your current situation: gap year, consulting/employment positioning, and validating whether Tictag is worth committing to.</p>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p1">Must Ask</span><div class="q-text" style="flex:1;margin-left:12px;">From your perspective as CTO, what's the actual root cause of the SG-Vietnam delivery gap — technology problem, process problem, or people problem?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">Yihang will give you the most unfiltered answer you'll get from anyone at Tictag. Kevin gives strategic answers. Michael gave you his investor answer. Yihang is the builder — his diagnosis tells you whether there's a solvable problem or a structural impasse. It also tells you whether he'll be your ally or an obstacle.</div>
+          <div class="follow-up"><strong>Listen for:</strong> "Technology" = more work than you signed up for. "Process" = your opening. "People" (Vietnam team, Michael) = internal conflict that could make your role impossible.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p1">Must Ask</span><div class="q-text" style="flex:1;margin-left:12px;">What would a good Senior PM need to say "no" to in the first 90 days, in your view?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">This is the real test of whether Yihang wants a PM who pushes back or one who absorbs pressure. If he struggles to answer, he may want a PM who executes Vietnam requests without filtering. That would burn you out. His answer tells you the true mandate.</div>
+          <div class="follow-up"><strong>Listen for:</strong> Good: "say no to scope creep when SG architecture can't support it." Dangerous: "that's not really a question we'd expect the PM to deal with." Red flag: no answer or redirection.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p1">Must Ask</span><div class="q-text" style="flex:1;margin-left:12px;">Be honest with me — what do you actually need that you didn't get from the last PM? Not the job description version.</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">Yihang and Garreth are friends. Asking this positions you as someone who doesn't do theater — which builds real trust. You also need this answer to calibrate whether you can succeed here or whether you'd be set up the same way Garreth was.</div>
+          <div class="follow-up"><strong>Listen for:</strong> Specificity. "Someone who could translate requirements clearly without me rewriting the spec" = actionable. Vague answers = he doesn't know, which is its own signal.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p2">Important</span><div class="q-text" style="flex:1;margin-left:12px;">What's on your R&D roadmap for the next 12 months that the Vietnam team doesn't know about yet?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">You need to know if the SG pipeline has anything that gives you a real product advantage in Vietnam client conversations. It also signals you're thinking about leveraging SG's work, not bypassing it. Yihang will respond well to this framing.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p2">Important</span><div class="q-text" style="flex:1;margin-left:12px;">How do you currently decide what goes into a sprint versus what waits? And who has the final call when SG and VN disagree on priority?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">This surfaces the real operating model gap. If there's no clear answer, that's your mandate. "Kevin decides everything" = bottleneck. "Yihang and Michael fight it out" = political problem. You need clarity here before accepting any scope.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p2">Important</span><div class="q-text" style="flex:1;margin-left:12px;">What does success look like for you personally in the next 12 months — not the company, you specifically?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">You need Yihang as an internal ally. Understanding what he personally wants to achieve — more research credibility, more successful CV deployments, fewer PM-related interruptions — tells you how to make him a champion of your role rather than a skeptic.</div>
+        </div>
+      </div>
+
+      <div class="your-q-item" onclick="toggleYourQ(this)">
+        <div class="your-q-header"><span class="priority-badge p3">Nice to Have</span><div class="q-text" style="flex:1;margin-left:12px;">What's one thing about the SG architecture that you think is underestimated by the Vietnam commercial side?</div><div class="q-toggle">+</div></div>
+        <div class="your-q-body">
+          <div class="why-label">Why This Question</div>
+          <div class="why-text">Pure relationship-building. Asking a technical founder "what does no one appreciate about what you've built" shows genuine interest. He'll likely open up, and you'll learn something real about the tech stack at the same time.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+id).classList.add('active');btn.classList.add('active');}
+function toggleQA(el){el.classList.toggle('open');}
+function toggleYourQ(el){el.classList.toggle('open');}
+
+function showToast(msg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.borderColor=color||'var(--accent)';t.style.color=color||'var(--accent)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── EXPORT MD ──
+function exportMD(tab){
+  const ts=new Date().toISOString().slice(0,10);
+  let md='';
+  if(tab==='brief'){
+    md=`# Context Brief — Tictag CTO Meeting Prep\n_Exported: ${ts}_\n\n`;
+    md+=`## Yihang's Profile — Confidential\n**Low Yihang** · CTO · Co-Founder · Singapore\n\n`;
+    md+=`- NTU honors, Master's in Digital Media Engineering — technical credibility is core to his identity\n`;
+    md+=`- Day-0 co-founder with Kevin & Lee Jin — all TAIGER alumni, tight social bond\n`;
+    md+=`- Garreth (resigned PM) was also TAIGER network — Yihang and Garreth are friends\n`;
+    md+=`- Deep learning + full-stack — hands-on, not purely managerial\n`;
+    md+=`- Oversees all tech + data science; no designated Chief Data Scientist\n`;
+    md+=`- ⚠️ Garreth's exit likely landed on him: now no PM-to-Eng bridge between SG and VN\n\n`;
+    md+=`## Your Profile — What He'll Assess\n**Ngoc Le** · Senior PM · AI Voice · Fintech · 10 yrs SEA\n\n`;
+    md+=`- ⚠️ No computer vision background — expect this to surface\n`;
+    md+=`- Strong R&D-to-production track: emotion detection R&D → UAT → US live\n`;
+    md+=`- Multi-vendor AI architecture (TS: STS, ASR, NLU, TTS stack coordination)\n`;
+    md+=`- Dataset labelling framework design — directly relevant to Tictag's core\n`;
+    md+=`- EY tech due diligence — enterprise evaluation credibility\n`;
+    md+=`- ZaloPay, Shopee — SEA product ops depth\n\n`;
+    md+=`## Sensitive Intelligence — Handle Carefully\n\n`;
+    md+=`**The Garreth situation:** Garreth Peh resigned under pressure from Michael — framed as "failing to drive product cadence across SG-VN teams." Yihang and Garreth are friends. Yihang may privately disagree with this framing. He may see Michael's pressure as the real failure point. Do not volunteer any opinion on Garreth. If he raises it, be neutral and focus on systemic gaps, not personal failure.\n\n`;
+    md+=`**The structural tension:** SG team runs research pace. Michael wants fast-deploy commercial outputs for Vietnam. Kevin wants to preserve SG grants. Yihang built the 5-year R&D stack. He has skin in the Singapore work. Don't frame SG R&D as "too slow" — frame it as "underdeployed."\n\n`;
+    md+=`## What Yihang Wants From This Meeting\n\n`;
+    md+=`- Validate that you understand what the SG tech actually does and its real constraints\n`;
+    md+=`- Assess whether you'll be a bridge or a bottleneck between him and Vietnam delivery\n`;
+    md+=`- Understand whether you'll advocate for the SG R&D stack or bypass it\n`;
+    md+=`- Know if you're technical enough to translate requirements without hand-holding\n`;
+    md+=`- ⚠️ Quietly check: are you the kind of PM who creates process overhead, or who removes it?\n`;
+    dl(`tictag_context_brief_${ts}.md`,md);
+  } else if(tab==='his-q'){
+    md=`# His Questions → Your Answers\n_Exported: ${ts}_\n\n`;
+    document.querySelectorAll('#his-q-content .qa-item').forEach((item,i)=>{
+      const qNode=item.querySelector('.q-text');
+      const qText=qNode.childNodes[0]?qNode.childNodes[0].textContent.trim():qNode.textContent.trim();
+      const riskEl=item.querySelector('.risk-tag');
+      const risk=riskEl?` [${riskEl.textContent.trim()}]`:'';
+      const answerEl=item.querySelector('.answer-text');
+      const answer=answerEl?answerEl.innerText.replace(/<br>/g,'\n').trim():'';
+      const noteEl=item.querySelector('.tactical-note');
+      const note=noteEl?noteEl.innerText.trim():'';
+      md+=`## Q${i+1}${risk}\n${qText}\n\n### Recommended Answer\n${answer}\n\n`;
+      if(note) md+=`> **Tactical Note:** ${note}\n\n`;
+      md+=`---\n\n`;
+    });
+    dl(`tictag_his_questions_${ts}.md`,md);
+  } else if(tab==='your-q'){
+    md=`# Your Power Questions\n_Exported: ${ts}_\n\n`;
+    document.querySelectorAll('#your-q-content .your-q-item').forEach((item,i)=>{
+      const priority=item.querySelector('.priority-badge').textContent.trim();
+      const qText=item.querySelector('.q-text').textContent.trim();
+      const whyEl=item.querySelector('.why-text');
+      const why=whyEl?whyEl.innerText.trim():'';
+      const followEl=item.querySelector('.follow-up');
+      const follow=followEl?followEl.innerText.trim():'';
+      md+=`## Q${i+1} [${priority}]\n${qText}\n\n### Why This Question\n${why}\n\n`;
+      if(follow) md+=`### What To Listen For\n${follow}\n\n`;
+      md+=`---\n\n`;
+    });
+    dl(`tictag_your_questions_${ts}.md`,md);
+  }
+  showToast('Exported .md','var(--accent)');
+}
+
+function dl(name,content){const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);a.download=name;a.click();}
+
+// ── IMPORT MD ──
+function importMD(tab,input){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{renderImportedMD(tab,e.target.result);showToast('Imported successfully','#a78bfa');};
+  reader.readAsText(file);
+  input.value='';
+}
+function renderImportedMD(tab,md){
+  const id=tab==='brief'?'brief-content':tab==='his-q'?'his-q-content':'your-q-content';
+  document.getElementById(id).innerHTML=mdToHTML(md);
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function mdInline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text)">$1</strong>').replace(/⚠️/g,'<span style="color:var(--warning)">⚠️</span>');}
+function mdToHTML(md){
+  let html='<div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;">';
+  html+='<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;">Imported Content</div>';
+  for(const line of md.split('\n')){
+    const t=line.trim();
+    if(!t){html+='<div style="height:8px"></div>';continue;}
+    if(t.startsWith('# ')){html+=`<h2 style="font-size:18px;font-weight:600;color:var(--text);margin:0 0 4px">${esc(t.slice(2))}</h2>`;}
+    else if(t.startsWith('## ')){html+=`<h3 style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:20px 0 10px;padding-top:14px;border-top:1px solid var(--border)">${esc(t.slice(3))}</h3>`;}
+    else if(t.startsWith('### ')){html+=`<h4 style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin:12px 0 6px">${esc(t.slice(4))}</h4>`;}
+    else if(t.startsWith('- ')||t.startsWith('* ')){html+=`<div style="padding:3px 0 3px 16px;font-size:13px;color:#94a3b8;position:relative"><span style="position:absolute;left:0;color:var(--accent)">→</span>${mdInline(t.slice(2))}</div>`;}
+    else if(t.startsWith('> ')){html+=`<div style="margin:8px 0;padding:8px 12px;border-left:2px solid var(--warning);background:rgba(251,191,36,.04);font-size:12px;color:#94a3b8">${mdInline(t.slice(2))}</div>`;}
+    else if(t==='---'){html+=`<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">`;}
+    else if(t.startsWith('_')&&t.endsWith('_')){html+=`<div style="font-size:11px;color:var(--muted);margin-bottom:12px">${esc(t.slice(1,-1))}</div>`;}
+    else{html+=`<p style="font-size:13px;color:#94a3b8;line-height:1.75;margin:3px 0">${mdInline(t)}</p>`;}
+  }
+  html+='</div>';
+  html+=`<div style="margin-top:12px;padding:10px 14px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a78bfa;letter-spacing:.08em">Showing imported content · Reload page to restore interactive view</div>`;
+  return html;
+}
+
+// ── EXPORT CSV ──
+function exportCSV(){
+  const rows=[['index','role','sender','message']];
+  document.querySelectorAll('#chat-log .chat-message').forEach((msg,i)=>{
+    const senderEl=msg.querySelector('.message-sender');
+    const textEl=msg.querySelector('.message-text');
+    if(!senderEl||!textEl) return;
+    const role=senderEl.classList.contains('yihang')?'yihang':senderEl.classList.contains('ngoc')?'ngoc':'system';
+    if(role==='system') return;
+    const sender=senderEl.textContent.trim();
+    const text=textEl.innerText.trim().replace(/\r?\n/g,' ');
+    rows.push([i,role,sender,text]);
+  });
+  if(rows.length<=1){showToast('No dialog to export yet','#f87171');return;}
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const ts=new Date().toISOString().slice(0,19).replace(/[:.]/g,'-');
+  dl(`tictag_roleplay_${ts}.csv`,csv);
+  showToast(`Exported ${rows.length-1} messages`,'#4ade80');
+}
+
+// ── ROLEPLAY ──
+const SYSTEM_PROMPT=`You are Low Yihang, CTO and co-founder of Tictag (Singapore), a computer vision AI company.
+
+PERSONALITY:
+- Technical, precise, slightly guarded with outsiders
+- Deep loyalty to co-founders Kevin and Lee Jin — TAIGER alumni, day-0 friends
+- Garreth Peh (resigned Senior PM) is also a TAIGER friend. You don't fully agree with how his departure was framed. You think the SG-VN structural problems were the real issue, but won't say this directly.
+- You built Tictag's R&D stack over 5 years. You're proud of it. Skeptical of people who want to bypass it.
+- You're interviewing Ngoc because Kevin/Michael asked, but you have your own criteria.
+
+WHAT YOU'RE ASSESSING:
+- Technical literacy: does she understand AI deployment vs. research?
+- PM discipline: will she create clear specs or noise?
+- Political intelligence: how does she handle the SG-VN tension?
+- Whether she'll advocate for the SG work or sideline it
+- Whether she fits the team culture (small, technical, tight-knit)
+
+CONFIDENTIAL CONTEXT:
+- Singapore team: research pace, 5 years computer vision R&D
+- Vietnam team: 2-3 months old, led by Michael La (10% investor/CEO Vietnam)
+- Vietnam clients: Lotte (fraud detection), VNA Cargo (dynamic pricing + asset detection), Tan Son Nhat Cargo
+- Key blockers: on-premise processing requirement, 30-min latency vs real-time need
+- Garreth was pressured out by Michael — you don't fully agree
+- Mabel Chen is still a PM but junior
+- Series A July 2024, Telkomsel Ventures led, ~$4.74M total
+- Singapore government AI grant is critical
+
+STYLE: Direct but not aggressive. Push back when she oversells or avoids the CV gap. Show warmth when she demonstrates genuine understanding. Keep responses to 3-5 sentences. Stay in character always.
+
+The conversation has already started with you asking about the SG-VN deployment gap. Continue from her latest message.`;
+
+let conversationHistory=[{role:"assistant",content:"Hey Ngoc, thanks for making time. Michael mentioned you've done some serious research on us — which I appreciate, honestly, most people come in pretty thin on the technical side. So let me just jump in: what's your honest read on what the SG team is actually building, and why do you think the Vietnam side is struggling to deploy it?"}];
+
+async function sendMessage(){
+  const input=document.getElementById('user-input');
+  const btn=document.getElementById('send-btn');
+  const text=input.value.trim();
+  if(!text) return;
+  appendMessage('ngoc','Ngoc Le',text);
+  conversationHistory.push({role:"user",content:text});
+  input.value='';input.style.height='auto';
+  btn.disabled=true;btn.textContent='...';
+  const tid=showTyping();
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEM_PROMPT,messages:conversationHistory})});
+    const d=await r.json();
+    removeTyping(tid);
+    const reply=d.content?.[0]?.text||"...";
+    conversationHistory.push({role:"assistant",content:reply});
+    appendMessage('yihang','Low Yihang — CTO, Tictag',reply);
+  }catch(e){removeTyping(tid);appendMessage('system','System','Connection error. Try again.');}
+  btn.disabled=false;btn.textContent='Send';input.focus();
+}
+
+function appendMessage(role,sender,text){
+  const log=document.getElementById('chat-log');
+  const div=document.createElement('div');
+  div.className='chat-message';
+  div.setAttribute('data-role',role);
+  div.innerHTML=`<div class="avatar ${role}">${role==='yihang'?'YH':role==='ngoc'?'NL':'SYS'}</div><div class="message-body"><div class="message-sender ${role}">${sender}</div><div class="message-text">${text.replace(/\n/g,'<br>')}</div></div>`;
+  log.appendChild(div);
+  div.scrollIntoView({behavior:'smooth',block:'end'});
+}
+function showTyping(){
+  const log=document.getElementById('chat-log');
+  const id='t'+Date.now();
+  const div=document.createElement('div');
+  div.className='chat-message';div.id=id;
+  div.innerHTML=`<div class="avatar yihang">YH</div><div class="message-body"><div class="message-sender yihang">Low Yihang — CTO, Tictag</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  log.appendChild(div);div.scrollIntoView({behavior:'smooth',block:'end'});return id;
+}
+function removeTyping(id){const el=document.getElementById(id);if(el)el.remove();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+</script>
+</body>
+</html>
