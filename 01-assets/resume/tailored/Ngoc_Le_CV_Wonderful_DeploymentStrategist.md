@@ -52,6 +52,8 @@ Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0�
 
 **AI Agent — Enterprise Deployment, Discovery → Production (Aug 2023 – Present)**
 
+***Strategic — discovery, scoping & stakeholder alignment***
+
 - **Led end-to-end deployment** of an AI Agent platform for enterprise customers — from
   discovery and pilot scoping through production launch — across a multi-vendor
   architecture; **7 months live US production** with **Republic Finance** and **Unity
@@ -60,10 +62,17 @@ Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0�
   the product thesis and market-selection framework (**80%** of the analysis), evaluating
   verticals (Customer Support, CRM, Investment Advisory, Collection) on regulatory moat,
   unit economics, and competitive density.
+- **Aligned Product, Engineering, and customer teams on deliverables, timelines, and
+  SLAs** — coordinated 3 engineering sub-teams plus Operations across parallel
+  workstreams; applied 80/20 prioritisation with trade-offs communicated transparently
+  to C-level sponsors.
 - **Managed a 6-market enterprise pipeline** with distinct regulatory, data, and
   operational requirements — owning RFP responses, due-diligence materials, and product
   documentation. Pipeline: Australia (CBA), Philippines (Home Credit), India (HDFC),
   Vietnam (TPBank), US (live production).
+
+***Execution (hands-on) — build, optimise & safeguard***
+
 - **Monitored production performance and drove improvements** — delivered **1.7×
   conversion** and **5.2× revenue uplift within 30 days** via root-cause analysis,
   severity mapping, and prioritised sequencing across agent workflow states.
@@ -72,14 +81,11 @@ Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0�
   within 3 months; a context-aware workflow redesign (Intelligent History Analysis +
   Dynamic Detection) lifting verification success **+9 points** from a finding that 40%
   of inbound interactions had classifiable intent.
-- **Owned R&D-to-production of an agent-intelligence capability** — designed the
-  dataset-labelling / evaluation framework (dual-annotator: GPT + Gemini for
-  inter-rater reliability), validated via **A/B production testing** (50-call sample),
-  iterated on live signal — **2× target metric, +60% engagement**.
-- **Aligned Product, Engineering, and customer teams on deliverables, timelines, and
-  SLAs** — coordinated 3 engineering sub-teams plus Operations across parallel
-  workstreams; applied 80/20 prioritisation with trade-offs communicated transparently
-  to C-level sponsors.
+- **Coordinated agent refinement toward production** — owned R&D-to-production of an
+  agent-intelligence capability: designed the dataset-labelling / evaluation framework
+  (dual-annotator: GPT + Gemini for inter-rater reliability), validated via **A/B
+  production testing** (50-call sample), iterated on live signal — **2× target metric,
+  +60% engagement**.
 - **Managed risk and removed blockers** — designed a compliance-enforcement architecture
   (dual-LLM reflection) ensuring every agent action passes regulatory checks before
   execution: **17 regulatory triggers**, **zero compliance incidents** for covered
