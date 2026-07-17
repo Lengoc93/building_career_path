@@ -62,10 +62,10 @@ Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0�
   the product thesis and market-selection framework (**80%** of the analysis), evaluating
   verticals (Customer Support, CRM, Investment Advisory, Collection) on regulatory moat,
   unit economics, and competitive density.
-- **Aligned Product, Engineering, and customer teams on deliverables, timelines, and
-  SLAs** — coordinated 3 engineering sub-teams plus Operations across parallel
-  workstreams; applied 80/20 prioritisation with trade-offs communicated transparently
-  to C-level sponsors.
+- **Aligned Product, Engineering, Data Science (R&D), and customer teams on
+  deliverables, timelines, and SLAs** — coordinated 3 engineering sub-teams plus Data
+  Science and Operations across parallel workstreams; applied 80/20 prioritisation with
+  trade-offs communicated transparently to C-level sponsors.
 - **Managed a 6-market enterprise pipeline** with distinct regulatory, data, and
   operational requirements — owning RFP responses, due-diligence materials, and product
   documentation. Pipeline: Australia (CBA), Philippines (Home Credit), India (HDFC),
