@@ -31,8 +31,14 @@ _A Deployment Strategist is a Forward-Deployed operator who turns an enterprise'
 messy requirements into a live, adopted AI agent — which is exactly the 0→1
 regulated-AI deployment I already ran to US production at Trusting Social._
 
+## Application documents
+
+- **Tailored CV:** `../../../../01-assets/resume/tailored/Ngoc_Le_CV_Wonderful_DeploymentStrategist.md`
+  — cut specifically for this JD (mirrors the deployment lifecycle language, leads with
+  production/adoption metrics, foregrounds the VN-market + startup-0→1 angle).
+
 ## Source of truth
 
-- JD: `../../../../00-strategy/` context + this kit's `00-opportunity-brief.md`
+- JD: this kit's `jd-deployment-strategist.md`
 - Proof behind every claim I make: `../../../../02-evidence/trusting-social/`
 - Reusable interview tooling: `../../../../04-prep-toolkit/`
