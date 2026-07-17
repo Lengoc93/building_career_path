@@ -15,6 +15,7 @@ Read in order the first time; after that, jump to whichever round you're preppin
 
 | File | Purpose |
 | :--- | :------ |
+| `jd-deployment-strategist.md` | The full JD verbatim (responsibilities, requirements, nice-to-haves, recruiter contact) |
 | `00-opportunity-brief.md` | The one-page truth: role, comp, stakeholders, KPIs, process |
 | `01-company-research.md` | Wonderful — funding, product, strategy, APAC expansion (public sources) |
 | `02-fit-and-positioning.md` | JD → my profile mapping, positioning thesis, gaps + how to frame them |

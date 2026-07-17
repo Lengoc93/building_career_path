@@ -31,6 +31,38 @@ Three pillars, each provable from `02-evidence/`:
 | Identify & develop new use cases to expand adoption | Emotional-speech capability (industry-first) built from a production signal → expanded agent effectiveness at the negotiation stage |
 | Track progress, manage risk, remove blockers | Guardrail state machine (~9,500 lines, 17 states) — risk embedded structurally; 80/20 + root-cause + severity mapping as my operating method |
 
+## Requirements & nice-to-have mapping (I clear the bar, and the "nice-to-haves" are literally me)
+
+| JD requirement | My evidence | Verdict |
+| :------------- | :---------- | :------ |
+| 3+ years technical problem-solving | 10+ years AI product/delivery, fintech, platforms | **Exceed** |
+| Comfort with APIs, data flows, system integrations | Telco-data integration into a live scoring pipeline; multi-vendor US agent architecture; ~9,500-line state machine | **Strong** |
+| Manage multiple stakeholders, keep complex efforts moving | 6-market pipeline (AU/PH/IN/VN/US), cross-functional US launch, EY multi-party DD | **Exceed** |
+| High-agency mindset — create clarity, propose direction, drive decisions | Co-authored the product thesis/market-selection framework (80% of it); root-caused and drove the production turnaround | **Exceed** |
+| Proactive, hands-on, interested in AI products | Currently PM on an AI Governance guardrails framework; frontier-LLM/agents/voice reading practice | **Strong** |
+| Communication, project management, organization | Authored 80% of client-facing DD/proposal materials; ran multi-team delivery to SLAs | **Strong** |
+| Bachelor's in CS / related technical field or equivalent | RMIT — B. Business Information Systems (Economics & Finance) — technical-adjacent + equivalent experience | **Meets** (frame as equivalent) |
+
+**Nice-to-haves — this is my differentiated core, not a bonus:**
+
+| Nice-to-have | My evidence |
+| :----------- | :---------- |
+| Engineering background / hands-on technical experience | Owned production agent architecture, evals, and guardrail state machine — hands-on at the system level |
+| Management / strategy / technical consulting; problem discovery; ambiguous problems; senior stakeholders | **EY Singapore** — cross-border tech & commercial due diligence for global PE/sovereign clients (~$300M deal); structured discovery is my trained craft |
+| High-growth / early-stage startup experience | Trusting Social 0→1 (thesis→US production); from-zero 6-market pipeline; startup-mode delivery under client pressure |
+
+> Read: I don't just *meet* this JD — the parts most candidates treat as stretch
+> ("nice to have": consulting + senior stakeholders + startup 0→1) are my strongest
+> assets. The one item to *frame* rather than claim outright is the CS degree —
+> lead with "equivalent experience" and the hands-on system work.
+
+## Note on the channel
+
+Sourced via **external recruiter (EV-Search, Jamie / Anh Nguyen)** — she is an
+agency partner, motivated to place a strong candidate and a useful intel channel, but
+**not** a Wonderful employee. Keep her close and well-briefed; her advocacy carries
+weight, and she can coach me on what the client is really weighting between rounds.
+
 ## Why the "expert IC, high ownership, reports to CTO" shape fits me
 
 - I operate **product-strategy + architecture**, not people-management-for-its-own-sake
