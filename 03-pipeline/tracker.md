@@ -8,6 +8,7 @@ and `Owner`/date current — this is the roadmap you'd demand of any PM.
 
 | Target | Role | Market | Stage | Next action | Due | Folder |
 | :----- | :--- | :----- | :---- | :---------- | :-- | :----- |
+| Wonderful | Deployment Strategist | VN (remote, global) | Sourced / recruiter convo | Prep for HR phone screen; confirm start availability & comp posture | — | `targets/wonderful/deployment-strategist/` |
 | Tictag | CTO-track / AI Product | — | Interviewing | Review roleplay prep before next round | — | `targets/tictag/` |
 
 ## Notes
