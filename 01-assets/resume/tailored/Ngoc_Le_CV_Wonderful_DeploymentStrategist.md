@@ -117,23 +117,17 @@ adoption · Strategy-consulting discovery & startup 0→1
   corporate-governance diagnostic for a Vietnamese bank — findings informing board-level
   decisions.
 
-### ZaloPay — VNG · Vietnam · *Aug 2017 – Oct 2018*
-**Product Owner — Integration & Cost Efficiency**
+### ZaloPay — VNG · Vietnam · *Aug 2017 – Oct 2018* — Product Owner, Integration & Cost Efficiency
 
-- Owned the roadmap across Partner Integration and Cashflow Optimisation — leading a
-  cross-functional squad of 10 (Business, Engineering, Design, Risk, Compliance,
-  Marketing).
-- **Redesigned the partner-integration workflow — 4× faster integration**, accelerating
-  partner time-to-revenue; diagnosed and fixed friction across cash-in/out/circulation
-  flows to improve cost efficiency.
+- Led a cross-functional squad of 10 across Partner Integration and Cashflow Optimisation
+  — **redesigned the partner-integration workflow for 4× faster integration** and fixed
+  friction across core cash-in/out/circulation flows to improve cost efficiency.
 
-### Shopee — Sea Group · Vietnam · *Aug 2016 – Jul 2017*
-**Product Operations Specialist**
+### Shopee — Sea Group · Vietnam · *Aug 2016 – Jul 2017* — Product Operations Specialist
 
-- Built and institutionalised the **Incident Management and Product Launch Process** for
-  Vietnam — escalation paths, severity tiers, cross-regional coordination adopted as the
-  market standard.
-- Primary Vietnam-side interface for regional product decisions with the Singapore HQ.
+- Built Vietnam's **Incident Management and Product Launch Process** (escalation paths,
+  severity tiers, cross-regional coordination) — adopted as the market standard; primary
+  Vietnam interface for regional product decisions with the Singapore HQ.
 
 ---
 
@@ -144,14 +138,10 @@ Finance · *Vietnam, 2016*
 
 ---
 
-## SELECTED TECHNICAL & DOMAIN CONTEXT
+## TECHNICAL & DOMAIN CONTEXT
 
-- **AI / agents:** agent orchestration & state-machine design, evaluation frameworks
-  (LLM-as-judge, inter-rater reliability, A/B in production), context engineering,
-  guardrails/compliance, voice stack (ASR→LLM→TTS, streaming emotion).
-- **Integration:** APIs, data flows, third-party data-source integration, eKYC & scoring
-  pipelines, multi-vendor architectures.
-- **Markets:** Vietnam & SEA enterprise (FMCG/retail/telecom/banking), non-English-market
-  localisation, cross-border multi-stakeholder delivery.
-- **Method:** discovery & problem structuring, 80/20 prioritisation, root-cause &
-  severity mapping, high-agency delivery under ambiguity.
+**AI / agents:** agent orchestration & state-machine design · evals (LLM-as-judge, A/B in
+production) · context engineering · guardrails/compliance · voice stack (ASR→LLM→TTS).
+**Integration:** APIs, data flows, eKYC & scoring pipelines, multi-vendor architectures.
+**Markets:** Vietnam & SEA enterprise (FMCG, retail, telecom, banking), non-English-market
+localisation, cross-border multi-stakeholder delivery.
