@@ -42,14 +42,6 @@ Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0�
 - **New-use-case expansion & adoption —** Built an emotion-detection capability from a
   production signal (**2× target metric, +60% engagement** at key workflow states) and
   a context-aware redesign lifting verification success **+9 points**.
-- **Multi-stakeholder, multi-market delivery —** Built a **6-market enterprise pipeline
-  from zero** (AU, PH, IN, VN, US), each with distinct regulatory, data, and
-  operational requirements; authored **80%** of due-diligence and proposal materials.
-- **Risk & compliance as architecture —** Designed structural guardrails covering **17
-  regulatory triggers** (FDCPA, Reg F, SCRA, TCPA) — **zero compliance incidents** for
-  covered categories across 7 months of production.
-- **Senior-stakeholder discovery (EY) —** Led technology & commercial due diligence for
-  global PE and sovereign-fund clients — one transaction **~$300M** investment value.
 
 ---
 
