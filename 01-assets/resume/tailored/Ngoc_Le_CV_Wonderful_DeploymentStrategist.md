@@ -21,10 +21,10 @@ discovery) and product leadership at **ZaloPay (VNG)** and **Shopee (Sea Group)*
 High-agency operator; **Vietnam/SEA-native** with the market fluency to localise
 enterprise AI for a non-English market.
 
-**Core strengths:** End-to-end AI deployment · Pilot & success-metric scoping · System
-integrations (APIs, data flows, third-party sources) · Stakeholder alignment & SLAs ·
-Production monitoring, evals & agent refinement · Use-case expansion & adoption ·
-Risk/compliance guardrails · Strategy-consulting-grade discovery · Startup 0→1
+**Core strengths:** End-to-end AI deployment (pilot scoping → production) · System
+integrations — APIs, data flows & agent refinement · Cross-functional stakeholder
+alignment, SLAs & risk/compliance guardrails · Production monitoring, evals & use-case
+adoption · Strategy-consulting discovery & startup 0→1
 
 ---
 
